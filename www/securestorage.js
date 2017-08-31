@@ -71,7 +71,14 @@ var _executeNativeMethod = function (success, error, nativeMethodName, args) {
         }
     };
 
+    try{
+    console.log("_executeNativeMethod: native call");
     cordova.exec(success, fail, 'SecureStorage', nativeMethodName, args);
+    }catch(exp){
+    console.log("_executeNativeMethod: error executing native call");
+    throw exp;
+    }
+
 };
 
 SecureStorageiOS = function (success, error, service) {
@@ -191,9 +198,21 @@ SecureStorageAndroid.prototype = {
     get: function (success, error, key) {
         try {
             if (this.options.native) {
+                console.log("SecureStorageAndroid.prototype.get: _native_get");
+                try{
                 this._native_get(success, error, key);
+                } catch(exp) {
+                console.log("SecureStorageAndroid.prototype.get: error _native_get");
+                throw exp;
+                }
             } else {
+                console.log("SecureStorageAndroid.prototype.get: _sjcl_get");
+                try {
                 this._sjcl_get(success, error, key);
+                } catch(exp) {
+                console.log("SecureStorageAndroid.prototype.get: error _sjcl_get");
+                throw exp;
+                }
             }
         } catch (e) {
             error(e);
