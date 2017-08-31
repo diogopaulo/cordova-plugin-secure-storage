@@ -28,7 +28,7 @@ public class SecureStorage extends CordovaPlugin {
 
     @Override
     public void onResume(boolean multitasking) {
-
+        log.e(TAG, "Is secureDevice check");
         if (secureDeviceContext != null) {
             if (isDeviceSecure()) {
                 secureDeviceContext.success();
@@ -38,6 +38,7 @@ public class SecureStorage extends CordovaPlugin {
             secureDeviceContext = null;
         }
 
+        log.e(TAG, "Initializing the secure storage");
         if (initContext != null && !initContextRunning) {
             cordova.getThreadPool().execute(new Runnable() {
                 public void run() {
@@ -60,6 +61,7 @@ public class SecureStorage extends CordovaPlugin {
     }
 
     private boolean isDeviceSecure() {
+        Log.e(TAG, "Is device secure?");
         KeyguardManager keyguardManager = (KeyguardManager)(getContext().getSystemService(Context.KEYGUARD_SERVICE));
         try {
             Method isSecure = null;
@@ -72,6 +74,8 @@ public class SecureStorage extends CordovaPlugin {
 
     @Override
     public boolean execute(String action, CordovaArgs args, final CallbackContext callbackContext) throws JSONException {
+        android.util.Log.e(TAG, "execute: start");
+        android.util.Log.e(TAG, "execute: init check");
         if ("init".equals(action)) {
             // 0 is falsy in js while 1 is truthy
             SUPPORTS_NATIVE_AES = Build.VERSION.SDK_INT >= 21 ? 1 : 0;
@@ -88,8 +92,11 @@ public class SecureStorage extends CordovaPlugin {
             } else {
                 callbackContext.success(SUPPORTS_NATIVE_AES);
             }
+            android.util.Log.e(TAG, "execute: end");
             return true;
         }
+
+        android.util.Log.e(TAG, "execute: set check");
         if ("set".equals(action)) {
             final String key = args.getString(0);
             final String value = args.getString(1);
@@ -110,8 +117,11 @@ public class SecureStorage extends CordovaPlugin {
                     }
                 }
             });
+            android.util.Log.e(TAG, "execute: end");
             return true;
         }
+
+        android.util.Log.e(TAG, "execute: get check");
         if ("get".equals(action)) {
             final String key = args.getString(0);
             String value = PREFS.fetch(key);
@@ -137,8 +147,11 @@ public class SecureStorage extends CordovaPlugin {
             } else {
                 callbackContext.error("Key [" + key + "] not found.");
             }
+            android.util.Log.e(TAG, "execute: end");
             return true;
         }
+
+        android.util.Log.e(TAG, "execute: decrypt_rsa check");
         if ("decrypt_rsa".equals(action)) {
             // getArrayBuffer does base64 decoding
             final byte[] decryptMe = args.getArrayBuffer(0);
@@ -153,8 +166,11 @@ public class SecureStorage extends CordovaPlugin {
                     }
                 }
             });
+            android.util.Log.e(TAG, "execute: end");
             return true;
         }
+
+        android.util.Log.e(TAG, "execute: encrypt_rsa check");
         if ("encrypt_rsa".equals(action)) {
             final String encryptMe = args.getString(0);
             cordova.getThreadPool().execute(new Runnable() {
@@ -168,28 +184,39 @@ public class SecureStorage extends CordovaPlugin {
                     }
                 }
             });
+            android.util.Log.e(TAG, "execute: end");
             return true;
         }
 
+        android.util.Log.e(TAG, "execute: secureDevice check");
         if ("secureDevice".equals(action)) {
             secureDeviceContext = callbackContext;
             unlockCredentials();
+            android.util.Log.e(TAG, "execute: end");
             return true;
         }
+
+        android.util.Log.e(TAG, "execute: remove check");
         //SharedPreferences interface
         if ("remove".equals(action)) {
             String key = args.getString(0);
             PREFS.remove(key);
             callbackContext.success();
+            android.util.Log.e(TAG, "execute: end");
             return true;
         }
+
+        android.util.Log.e(TAG, "execute: store check");
         if ("store".equals(action)) {
             String key = args.getString(0);
             String value = args.getString(1);
             PREFS.store(key, value);
             callbackContext.success();
+            android.util.Log.e(TAG, "execute: end");
             return true;
         }
+
+        android.util.Log.e(TAG, "execute: fetch check");
         if ("fetch".equals(action)) {
             String key = args.getString(0);
             String value = PREFS.fetch(key);
@@ -198,17 +225,26 @@ public class SecureStorage extends CordovaPlugin {
             } else {
                 callbackContext.error("Key [" + key + "] not found.");
             }
+            android.util.Log.e(TAG, "execute: end");
             return true;
         }
+
+        android.util.Log.e(TAG, "execute: keys check");
         if ("keys".equals(action)) {
             callbackContext.success(new JSONArray(PREFS.keys()));
+            android.util.Log.e(TAG, "execute: end");
             return true;
         }
+
+        android.util.Log.e(TAG, "execute: clear check");
         if ("clear".equals(action)) {
             PREFS.clear();
             callbackContext.success();
+            android.util.Log.e(TAG, "execute: end");
             return true;
         }
+
+        android.util.Log.e(TAG, "execute: end");
         return false;
 
     }
