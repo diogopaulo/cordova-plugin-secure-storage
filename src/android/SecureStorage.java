@@ -28,7 +28,7 @@ public class SecureStorage extends CordovaPlugin {
 
     @Override
     public void onResume(boolean multitasking) {
-        log.e(TAG, "Is secureDevice check");
+        Log.e(TAG, "Is secureDevice check");
         if (secureDeviceContext != null) {
             if (isDeviceSecure()) {
                 secureDeviceContext.success();
@@ -38,7 +38,7 @@ public class SecureStorage extends CordovaPlugin {
             secureDeviceContext = null;
         }
 
-        log.e(TAG, "Initializing the secure storage");
+        Log.e(TAG, "Initializing the secure storage");
         if (initContext != null && !initContextRunning) {
             cordova.getThreadPool().execute(new Runnable() {
                 public void run() {
